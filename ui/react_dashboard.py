@@ -7,7 +7,7 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-import streamlit.components.v1 as components
+import streamlit as st
 
 
 DIST_DIR = Path(__file__).resolve().parent.parent / "react_dashboard" / "dist"
@@ -53,8 +53,7 @@ def _read_asset(name: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def render_react_dashboard(payload: Mapping[str, Any] | None = None, height: int = 1500) -> None:
-    """Render production React assets without starting a separate dev server."""
+def _load_built_assets() -> tuple[str, str]:
     index_path = DIST_DIR / "index.html"
     if not index_path.is_file():
         raise FileNotFoundError(
@@ -73,23 +72,28 @@ def render_react_dashboard(payload: Mapping[str, Any] | None = None, height: int
         for part in index_html.split('href="')[1:]
         if part.startswith("/assets/")
     )
-    script = _read_asset(Path(script_name).name)
-    style = _read_asset(Path(style_name).name)
-    payload_json = json.dumps(_json_value(payload or {}), ensure_ascii=True).replace("</", "<\\/")
+    return _read_asset(Path(script_name).name), _read_asset(Path(style_name).name)
 
+
+_REACT_SCRIPT, _REACT_STYLE = _load_built_assets()
+
+
+def render_react_dashboard(payload: Mapping[str, Any] | None = None, height: int = 1500) -> None:
+    """Render the production React document without deprecated component APIs."""
+    payload_json = json.dumps(_json_value(payload or {}), ensure_ascii=True).replace("</", "<\\/")
     html = f"""
     <!doctype html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <style>{style}</style>
+        <style>{_REACT_STYLE}</style>
       </head>
       <body>
         <div id="root"></div>
         <script>window.__CLIMACARE_DATA__ = {payload_json};</script>
-        <script type="module">{script}</script>
+        <script type="module">{_REACT_SCRIPT}</script>
       </body>
     </html>
     """
-    components.html(html, height=height, scrolling=True)
+    st.iframe(html, width="stretch", height=height)
