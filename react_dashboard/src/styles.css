@@ -127,6 +127,7 @@ button:focus-visible { outline: 3px solid rgba(0, 118, 210, .35); outline-offset
 .blue-text { color: var(--blue); }
 .welcome h1 { max-width: 850px; margin: 10px 0 8px; font-size: clamp(32px, 4vw, 52px); line-height: 1.04; letter-spacing: -2px; }
 .welcome p { color: var(--muted); margin: 0; font-size: 15px; }
+.service-message { margin: 0 0 16px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--blue-soft); color: var(--text); font-size: 13px; }
 .section-view { min-height: 520px; padding: 42px 0; }
 .section-view h1 { max-width: 760px; margin: 12px 0 10px; font-size: clamp(32px, 4vw, 52px); line-height: 1.04; letter-spacing: -2px; }
 .section-view > p { max-width: 620px; color: var(--muted); font-size: 15px; line-height: 1.6; }

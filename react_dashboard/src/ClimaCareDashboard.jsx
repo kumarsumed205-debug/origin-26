@@ -13,9 +13,9 @@ const EMPTY_DATA = {
 function readData() { return { ...EMPTY_DATA, ...(window.__CLIMACARE_DATA__ || {}) }; }
 function valueOrPlaceholder(value, suffix = "") { return value === null || value === undefined || value === "" ? "--" : `${value}${suffix}`; }
 function locationLabel(location) {
-  if (!location) return "Location pending";
+  if (!location) return "Location permission required";
   if (typeof location === "string") return location;
-  return location.name || location.city || location.label || location.display_name || "Location pending";
+  return location.name || location.city || location.label || location.display_name || "Location permission required";
 }
 function greeting() { const hour = new Date().getHours(); return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"; }
 function WeatherIcon({ type = "partly" }) {
@@ -98,6 +98,7 @@ export default function ClimaCareDashboard() {
     <AppHeader active={active} setActive={setActive} dark={dark} setDark={setDark} location={location} />
     <main className="page">{active === "Home" ? <>
       <section className="welcome"><div className="eyebrow blue-text">{greeting()}</div><h1>Here’s how today’s environment may affect your health.</h1><p>Simple, personalized environmental health guidance at a glance.</p></section>
+      {data.status === "backend_unavailable" && <div className="service-message" role="status">ClimaCare services are temporarily unavailable.</div>}
       <HeroWeather location={location} weather={weather} />
       <section className="metrics-grid"><MetricCard label="Humidity" value={weather?.humidity} icon={Droplets} unit="%" pending={weather?.humidity == null} /><MetricCard label="AQI" value={airQuality?.aqi} icon={Wind} pending={airQuality?.aqi == null} /><MetricCard label="PM2.5" value={airQuality?.pm25} icon={Activity} unit="µg/m³" pending={airQuality?.pm25 == null} /><MetricCard label="Wind Speed" value={weather?.wind_speed} icon={Navigation} unit="km/h" pending={weather?.wind_speed == null} /></section>
       <section className="main-grid"><RiskCard risk={data.risk} /><AdvisoryCard advisory={data.advisory} risk={data.risk} /><ForecastCard forecast={data.forecast} /></section>

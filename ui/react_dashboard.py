@@ -30,6 +30,7 @@ def build_dashboard_payload(
     advisory: Any = None,
     forecast: Sequence[Mapping[str, Any]] | None = None,
     trends: Sequence[Mapping[str, Any]] | None = None,
+    status: str | None = None,
 ) -> dict[str, Any]:
     """Adapt existing Python values into the React display payload."""
     return {
@@ -41,6 +42,7 @@ def build_dashboard_payload(
         "advisory": _json_value(advisory),
         "forecast": _json_value(forecast or []),
         "trends": _json_value(trends or []),
+        "status": status,
     }
 
 

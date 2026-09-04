@@ -1,8 +1,25 @@
 """Adapter boundary for Saransh's backend services.
 
-The imports and adapter calls will be added during integration. No backend
-logic, live data, risk calculation, or advisory generation belongs here yet.
+The backend capabilities are not present in this checkout yet. This module
+keeps that absence explicit so the Streamlit app remains runnable without
+inventing API calls or environmental values.
 """
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import Any
+
+
+class BackendUnavailableError(RuntimeError):
+	"""Raised when a requested backend capability is not implemented."""
+
+
+def get_current_assessment(profile: Mapping[str, Any] | None = None) -> None:
+	"""Define the integration boundary until Saransh exposes the service."""
+	raise BackendUnavailableError(
+		"No weather, AQI, location, risk, or advisory backend is available yet."
+	)
 
 # Future integration targets:
 # from api.location import reverse_geocode
